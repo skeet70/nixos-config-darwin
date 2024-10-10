@@ -1,0 +1,121 @@
+BLUE=0xFF1E6E77
+PURPLE=0xFFA753EA
+RED=0xFFBE425E
+GREEN=0xFF7E9853
+
+# main bar & defaults
+sketchybar --bar height=30        \
+                 margin=12        \
+                 y_offset=0       \
+                 padding_left=0   \
+                 padding_right=0  \
+                 color=0x00000000
+
+sketchybar --default updates=when_shown                             \
+                     icon.font="Liga SFMono Nerd Font:Normal:14.0"  \
+                     icon.color=0xFFFFFFFF                          \
+                     label.font="Liga SFMono Nerd Font:Normal:14.0" \
+                     background.color=0x00000000                    \
+                     y_offset=0
+
+# ~~ left items ~~
+
+sketchybar --add event aerospace_workspace_change
+
+# TODO(murph): give labels some space
+for sid in $(aerospace list-workspaces --all); do
+    sketchybar --add item space.$sid left \
+        --subscribe space.$sid aerospace_workspace_change \
+        --set space.$sid \
+        background.color=0x44ffffff \
+        background.corner_radius=5 \
+        background.height=15 \
+        background.drawing=off \
+        label="$sid" \
+        click_script="aerospace workspace $sid" \
+        script="$CONFIG_DIR/plugins/aerospace.sh $sid"
+done
+
+# consolidate space numbers and add a background
+sketchybar --add bracket spaces '/space\..*/'                \
+           --set         spaces background.color=0xEB1e1e2e            \
+                                background.corner_radius=15            \
+                                background.border_width=1              \
+                                background.border_color=$BLUE          \
+                                blur_radius=2                          \
+                                background.height=25                    
+# TODO(murph): get highlighter dot working
+# add space highlighter dot
+sketchybar --add item highlight_space left                      \
+           --set      highlight_space width=10                  \
+                                      background.color=$BLUE    \
+                                      background.height=10      \
+                                      background.corner_radius=11 \
+                                      script='./scripts/highlight_space.sh'
+
+sketchybar --subscribe highlight_space space_change
+
+#sketchybar --set space_ex.1 padding_left=-999999
+
+# update defaults
+sketchybar --default                                                \
+                     background.color=0xEB1e1e2e                    \
+                     blur_radius=2                                  \
+                     background.corner_radius=15                    \
+                     background.height=25                           \
+                     icon.padding_left=12                           \
+                     icon.padding_right=4                           \
+                     label.padding_left=4                           \
+                     label.padding_right=12                         \
+                     background.padding_left=18                     \
+                     background.border_width=1
+
+# app title
+sketchybar --add event title_change
+sketchybar --add item title left                                  \
+           --set      title label.padding_left=12                   \
+                            label="Title"                           \
+                            background.padding_left=0               \
+                            icon.padding_left=0                     \
+                            icon.padding_right=0                    \
+                            script='./scripts/title.sh'             \
+                            background.border_color=0x77ADADAD      \
+                            label.max_chars=54                      # \
+                            # scroll_texts=on                         \
+                            # label.scroll_duration=200
+
+sketchybar --subscribe title title_change
+
+
+# ~~ right items ~~
+
+# time
+sketchybar --add item time right                                    \
+           --set      time icon=󱑎                                   \
+                           icon.color=$PURPLE                       \
+                           background.border_color=$PURPLE          \
+                           label="$(date '+%I:%M %p')"              \
+                           script='./scripts/time.sh'               \
+                           update_freq=1
+
+# date
+sketchybar --add item date right                                    \
+           --set      date icon=󱨰                                   \
+                           icon.color=$RED                          \
+                           background.border_color=$RED             \
+                           label="$(date '+%a %b %d')"              \
+                           script='./scripts/date.sh'               \
+                           update_freq=10
+
+# battery
+sketchybar --add item battery right                                 \
+           --set      battery icon=                                \
+                              icon.color=$GREEN                     \
+                              background.border_color=$GREEN        \
+                              label="--%"                           \
+                              script='./scripts/battery.sh'         \
+                              update_freq=20
+
+# finish config
+sketchybar --hotload on
+sketchybar --update
