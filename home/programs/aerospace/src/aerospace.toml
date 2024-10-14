@@ -91,3 +91,7 @@ k = 'resize height -50'
 l = 'resize width +50'
 enter = 'mode main'
 esc = 'mode main'
+
+# disable if you need to sight read key combos while in qwerty layout
+[key-mapping]
+preset = 'dvorak'

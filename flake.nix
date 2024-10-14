@@ -24,7 +24,10 @@
       configuration = { pkgs, ... }: {
         # List packages installed in system profile. To search by name, run:
         # $ nix-env -qaP | grep wget
-        environment.systemPackages = [ ];
+        environment = {
+          systemPackages = [ ];
+          systemPath = [ /run/current-system/sw/bin ];
+        };
 
         homebrew = {
           enable = true;
@@ -65,7 +68,7 @@
 
         launchd.user.agents = {
           raycast = {
-            serviceConfig.ProgramArguments = [ "/Applications/Raycast.app/Contents/MacOS/Raycast" ];
+            serviceConfig.ProgramArguments = [ "~/Applications/Home Manager Apps/Raycast.app/Contents/MacOS/Raycast" ];
             serviceConfig.RunAtLoad = true;
           };
           aerospace = {
@@ -78,23 +81,30 @@
         nix.settings.experimental-features = "nix-command flakes";
 
         # Create /etc/zshrc that loads the darwin environment.
-        programs.zsh.enable = true; # default shell on catalina
+        programs = {
+          zsh.enable = true; # default shell on catalina
 
-        # download the public_key from Bitwarden gpg entry
-        # gpg2 --import ~/.ssh/public_key
-        # gpg2 --card-status
-        programs.gnupg.agent = {
-          enable = true;
-          enableSSHSupport = true;
+          # download the public_key from Bitwarden gpg entry
+          # gpg2 --import ~/.ssh/public_key
+          # gpg2 --card-status
+          gnupg.agent = {
+            enable = true;
+            enableSSHSupport = true;
 
+          };
         };
 
-        # Set Git commit hash for darwin-version.
-        system.configurationRevision = self.rev or self.dirtyRev or null;
+        system = {
+          # Set Git commit hash for darwin-version.
+          configurationRevision = self.rev or self.dirtyRev or null;
+          # allow hidden files everywhere
+          defaults.NSGlobalDomain.AppleShowAllFiles = true;
+          # Used for backwards compatibility, please read the changelog before changing.
+          # $ darwin-rebuild changelog
+          stateVersion = 5;
+        };
 
-        # Used for backwards compatibility, please read the changelog before changing.
-        # $ darwin-rebuild changelog
-        system.stateVersion = 5;
+
 
         # The platform the configuration will be used on.
         nixpkgs.hostPlatform = "aarch64-darwin";
@@ -127,7 +137,7 @@
               inherit (inputs.helix.packages.${prev.stdenv.system}) helix;
             })
             (final: prev: {
-              sf-mono-liga-bin = prev.stdenvNoCC.mkDerivation rec {
+              sf-mono-liga-bin = prev.stdenvNoCC.mkDerivation {
                 pname = "sf-mono-liga-bin";
                 version = "dev";
                 src = inputs.sf-mono-liga-src;
