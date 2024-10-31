@@ -6,12 +6,16 @@
 1. put the files in this repo into `~/.config/nix`
 1. run `nix run --extra-experimental-features nix-command --extra-experimental-features flakes nix-darwin -- switch --flake ~/.config/nix`
 1. run `darwin-rebuild switch --flake .` to rebuild with any flake changes
+1. run `gcloud auth configure-docker`
 
 ## Mac Settings changes
 
-1. System Settings -> Mouse -> Advanced -> Turn off pointer acceleration 
-1. System Settings -> Control Center -> Automatically hide and show the menu bar -> Always
 1. System Settings -> Keyboard -> Keyboard Shortcuts -> Spotlight, turn both off
+
+## Long Term Notes
+
+1. `colima start` starts the docker machine engine, `docker` commands and `testcontainer`s should work after that
+1. `spotify_player` can't auth via the API anymore, I had to use [this](https://github.com/dspearson/librespot-auth) tool, then copy the credentials to `~/.cache/spotify_player`
 
 Orion has a bug that makes YubiKeys not work while the Bitwarden extension is enabled. Turn off Bitwarden's key support to fix.
 

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -117,6 +117,8 @@
   # environment.
   home = {
     packages = with pkgs; [
+      colima
+      docker
       bat
       bitwarden-cli
       gnupg
@@ -163,6 +165,10 @@
     # if you don't want to manage your shell through Home Manager.
     sessionVariables = {
       EDITOR = "hx";
+      # workarounds to get colima working with testcontainers from https://node.testcontainers.org/supported-container-runtimes/#known-issues_1
+      DOCKER_HOST = "unix://${config.home.homeDirectory}/.colima/default/docker.sock";
+      TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE = "/var/run/docker.sock";
+      TESTCONTAINERS_RYUK_DISABLED = 1;
     };
   };
 }

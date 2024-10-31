@@ -59,6 +59,10 @@
             "font-sf-mono"
             "font-sf-pro"
           ];
+
+          masApps = {
+            WireGuard = 1451685025;
+          };
         };
 
         fonts.packages = with pkgs; [ sf-mono-liga-bin ];
@@ -99,9 +103,15 @@
           configurationRevision = self.rev or self.dirtyRev or null;
           # allow hidden files everywhere
           defaults.NSGlobalDomain.AppleShowAllFiles = true;
+          defaults.NSGlobalDomain._HIHideMenuBar = true;
+          defaults.CustomUserPreferences.NSGlobalDomain."com.apple.mouse.linear" = true;
           # Used for backwards compatibility, please read the changelog before changing.
           # $ darwin-rebuild changelog
           stateVersion = 5;
+          activationScripts.postUserActivation.text = ''
+            # Following line should allow us to avoid a logout/login cycle
+            /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+          '';
         };
 
 

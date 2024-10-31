@@ -1,7 +1,4 @@
-{ config
-, pkgs
-, ...
-}: {
+{ pkgs, ... }: {
   programs.helix = {
     enable = true;
     package = pkgs.helix;
@@ -49,6 +46,14 @@
             command = "nixpkgs-fmt";
           };
           auto-format = true;
+        }
+        {
+          name = "json";
+          indent =
+            {
+              tab-width = 4;
+              unit = " ";
+            };
         }
         # [[language]]
         # name = "yaml"
