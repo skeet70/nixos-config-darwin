@@ -134,8 +134,8 @@
     in
     {
       # Build darwin flake using:
-      # $ darwin-rebuild build --flake .#Murphs-MacBook-Pro
-      darwinConfigurations."Murphs-MacBook-Pro" = darwin.lib.darwinSystem {
+      # $ darwin-rebuild build --flake .#gsv
+      darwinConfigurations."gsv" = darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         pkgs = import nixpkgs {
           system = "aarch64-darwin";
@@ -173,6 +173,6 @@
       };
 
       # Expose the package set, including overlays, for convenience.
-      darwinPackages = self.darwinConfigurations."Murphs-MacBook-Pro".pkgs;
+      darwinPackages = self.darwinConfigurations."gsv".pkgs;
     };
 }

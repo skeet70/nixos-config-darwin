@@ -19,5 +19,18 @@
 
 Orion has a bug that makes YubiKeys not work while the Bitwarden extension is enabled. Turn off Bitwarden's key support to fix.
 
+## New Mac M4
+
+Some things I needed to do to get things working on the new M4, coming from an M3
+
+1. uninstall Nix following the official instructions. Before you do this, try using [determinatesystems repairer](https://determinate.systems/posts/nix-support-for-macos-sequoia/). I didn't find out about it till after all this.
+2. install nix with [Lix](https://lix.systems/install/) `curl -sSf -L https://install.lix.systems/lix | sh -s -- install`
+3. run `ls -la /etc/ssl/certs/ca-certificates.crt` and if it's pointing to `/etc/static/ssl/certs/ca-certificates.crt`, run
+    ```
+    sudo rm /etc/ssl/certs/ca-certificates.crt
+    sudo ln -s /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
+    ```
+4. had to update the system name in `flake.nix` to the new one
+
 TODO:
 - why am i needing to run `nix run nix-darwin -- switch --flake ~/.config/nix-darwin` to get nix-darwin loaded initially?
