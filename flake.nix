@@ -5,6 +5,8 @@
     helix.url = "github:helix-editor/helix";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    # makes home-manager/nix-darwin installed apps show up in spotlight
+    mac-app-util.url = "github:hraban/mac-app-util";
     ironhide.url = "github:IronCoreLabs/ironhide";
     matui.url = "github:pkulak/matui";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -17,7 +19,7 @@
     };
   };
 
-  outputs = inputs@{ self, darwin, home-manager, nixpkgs, ... }:
+  outputs = inputs@{ self, darwin, home-manager, nixpkgs, mac-app-util, ... }:
     let
       configuration = { pkgs, ... }: {
         # List packages installed in system profile. To search by name, run:
@@ -70,7 +72,7 @@
 
         launchd.user.agents = {
           raycast = {
-            serviceConfig.ProgramArguments = [ "~/Applications/Home Manager Apps/Raycast.app/Contents/MacOS/Raycast" ];
+            serviceConfig.ProgramArguments = [ "${pkgs.raycast}/Applications/Raycast.app/Contents/MacOS/Raycast" ];
             serviceConfig.RunAtLoad = true;
           };
           aerospace = {
@@ -165,12 +167,14 @@
         };
 
         modules = [
+          mac-app-util.darwinModules.default
           configuration
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.mumu = import ./home/home.nix;
+            home-manager.sharedModules = [ mac-app-util.homeManagerModules.default ];
           }
         ];
       };
