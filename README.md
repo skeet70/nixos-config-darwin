@@ -16,6 +16,7 @@
 
 1. `colima start` starts the docker machine engine, `docker` commands and `testcontainer`s should work after that
 1. `spotify_player` can't auth via the API anymore, I had to use [this](https://github.com/dspearson/librespot-auth) tool, then copy the credentials to `~/.cache/spotify_player`
+1. [This](https://astrid.tech/2022/11/03/0/overlay-nixpkgs-pr/) is helpful for patching specific packages
 
 Orion has a bug that makes YubiKeys not work while the Bitwarden extension is enabled. Turn off Bitwarden's key support to fix.
 

@@ -7,11 +7,9 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     ironhide.url = "github:IronCoreLabs/ironhide";
     matui.url = "github:pkulak/matui";
-    # bitwarden-cli has a build issue on macOS since 2024.8.0:
-    # this commit fixes nixpkgs right before switching to 2024.8.0
-    # https://github.com/NixOS/nixpkgs/issues/339576
-    nixpkgs.url = "github:nixos/nixpkgs/c374d94f1536013ca8e92341b540eba4c22f9c62";
-    #nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # for opensc, see https://github.com/NixOS/nixpkgs/pull/357494
+    nixpkgs-michaelladler.url = "github:michaeladler/nixpkgs?ref=fix/opensc-darwin";
     # SFMono w/ patches
     sf-mono-liga-src = {
       url = "github:shaunsingh/SFMono-Nerd-Font-Ligaturized";
@@ -26,7 +24,7 @@
         # $ nix-env -qaP | grep wget
         environment = {
           systemPackages = [ ];
-          systemPath = [ /run/current-system/sw/bin ];
+          systemPath = [ "/run/current-system/sw/bin" ];
         };
 
         homebrew = {
@@ -131,6 +129,10 @@
           allowUnfree = true;
         };
       };
+      opensc-overlay = final: prev: {
+        inherit (inputs.nixpkgs-michaelladler.legacyPackages.${prev.system})
+          opensc;
+      };
     in
     {
       # Build darwin flake using:
@@ -158,6 +160,7 @@
                 '';
               };
             })
+            opensc-overlay
           ];
         };
 

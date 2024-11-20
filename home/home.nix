@@ -120,7 +120,8 @@
       colima
       docker
       bat
-      bitwarden-cli
+      # disabled until https://github.com/NixOS/nixpkgs/issues/339576
+      #bitwarden-cli
       gnupg
       htop
       ironhide
