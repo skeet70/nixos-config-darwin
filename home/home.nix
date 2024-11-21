@@ -79,6 +79,9 @@
       enable = true;
       settings = {
         env.TERM = "alacritty";
+        font = {
+          size = 14;
+        };
         window = {
           decorations = "full";
           title = "Alacritty";
