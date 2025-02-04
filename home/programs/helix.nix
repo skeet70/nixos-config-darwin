@@ -25,7 +25,23 @@
           auto-format = true;
         }
         {
+          name = "jsx";
+          formatter = {
+            command = "prettier";
+            args = [ "--parser" "typescript" ];
+          };
+          auto-format = true;
+        }
+        {
           name = "typescript";
+          formatter = {
+            command = "prettier";
+            args = [ "--parser" "typescript" ];
+          };
+          auto-format = true;
+        }
+        {
+          name = "tsx";
           formatter = {
             command = "prettier";
             args = [ "--parser" "typescript" ];

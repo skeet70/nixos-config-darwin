@@ -14,9 +14,10 @@
 
 ## Long Term Notes
 
-1. `colima start` starts the docker machine engine, `docker` commands and `testcontainer`s should work after that
+1. `colima start --arch aarch64 --vm-type=vz` starts the docker machine engine, `docker` commands and `testcontainer`s should work after that. If you get `user-v2/user-v2_qemu.sock: connect: connection refused`, then run `rm -rf ~/.colima/_lima/_networks/user-v2`
 1. `spotify_player` can't auth via the API anymore, I had to use [this](https://github.com/dspearson/librespot-auth) tool, then copy the credentials to `~/.cache/spotify_player`
 1. [This](https://astrid.tech/2022/11/03/0/overlay-nixpkgs-pr/) is helpful for patching specific packages
+1. `syncthing` for syncing notes from phones to the Mac, where they get synced to Proton Drive. Running at http://localhost:8384/
 
 Orion has a bug that makes YubiKeys not work while the Bitwarden extension is enabled. Turn off Bitwarden's key support to fix.
 

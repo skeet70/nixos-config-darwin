@@ -47,17 +47,20 @@
             { name = "autoraise"; restart_service = "changed"; }
             # (macOS Sonoma) Hide the default macOS menu bar in System Settings -> Control Center -> Automatically hide and show the menu bar -> Always:
             { name = "sketchybar"; restart_service = "changed"; }
+            { name = "syncthing"; restart_service = "changed"; }
           ];
           casks = [
             "steam"
             "league-of-legends"
             "signal"
             "orion"
+            "proton-drive"
             "whisky"
             "aerospace"
             "sf-symbols"
             "font-sf-mono"
             "font-sf-pro"
+            "qobuz"
           ];
 
           masApps = {

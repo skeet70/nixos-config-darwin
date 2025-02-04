@@ -130,6 +130,7 @@
       # commented out, can't find cocoa during build, should look into it later
       # matui # lightweight matrix tui client
       nixpkgs-fmt
+      obsidian
       opensc
       ouch
       postman
