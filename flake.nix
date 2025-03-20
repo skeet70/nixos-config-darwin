@@ -9,10 +9,8 @@
     mac-app-util.url = "github:hraban/mac-app-util";
     ironhide.url = "github:IronCoreLabs/ironhide";
     matui.url = "github:pkulak/matui";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    # for opensc, see https://github.com/NixOS/nixpkgs/pull/357494
-    nixpkgs-michaelladler.url = "github:michaeladler/nixpkgs?ref=fix/opensc-darwin";
-    # SFMono w/ patches
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    # # SFMono w/ patches
     sf-mono-liga-src = {
       url = "github:shaunsingh/SFMono-Nerd-Font-Ligaturized";
       flake = false;
@@ -22,6 +20,7 @@
   outputs = inputs@{ self, darwin, home-manager, nixpkgs, mac-app-util, ... }:
     let
       configuration = { pkgs, ... }: {
+        nix.package = pkgs.nixVersions.nix_2_26;
         # List packages installed in system profile. To search by name, run:
         # $ nix-env -qaP | grep wget
         environment = {
@@ -55,6 +54,7 @@
             "signal"
             "orion"
             "proton-drive"
+            "freetube"
             "whisky"
             "aerospace"
             "sf-symbols"
@@ -69,9 +69,6 @@
         };
 
         fonts.packages = with pkgs; [ sf-mono-liga-bin ];
-
-        # Auto upgrade nix package and the daemon service.
-        services.nix-daemon.enable = true;
 
         launchd.user.agents = {
           raycast = {
@@ -127,16 +124,12 @@
           home = "/Users/mumu";
         };
 
-        security.pam.enableSudoTouchIdAuth = true;
+        security.pam.services.sudo_local.touchIdAuth = true;
       };
       nixpkgsConfig = {
         config = {
           allowUnfree = true;
         };
-      };
-      opensc-overlay = final: prev: {
-        inherit (inputs.nixpkgs-michaelladler.legacyPackages.${prev.system})
-          opensc;
       };
     in
     {
@@ -165,7 +158,6 @@
                 '';
               };
             })
-            opensc-overlay
           ];
         };
 

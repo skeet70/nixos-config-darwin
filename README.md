@@ -33,6 +33,7 @@ Some things I needed to do to get things working on the new M4, coming from an M
     sudo ln -s /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
     ```
 4. had to update the system name in `flake.nix` to the new one
+5. need to run `xattr -d com.apple.quarantine /Applications/FreeTube.app` each time Freetube updates
 
 TODO:
 - why am i needing to run `nix run nix-darwin -- switch --flake ~/.config/nix-darwin` to get nix-darwin loaded initially?

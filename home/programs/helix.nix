@@ -147,9 +147,9 @@
     nixpkgs-fmt # nix
     marksman # markdown
     metals # scala
-    python311Packages.python-lsp-server # python
-    python311Packages.python-lsp-ruff # python
-    python311Packages.pylsp-mypy # python
+    python312Packages.python-lsp-server # python
+    python312Packages.python-lsp-ruff # python
+    python312Packages.pylsp-mypy # python
     black # python
     rust-analyzer # rust
     nodePackages.svelte-language-server # svelte

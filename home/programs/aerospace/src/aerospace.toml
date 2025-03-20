@@ -25,8 +25,7 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 [mode.main.binding]
 # See: https://nikitabobko.github.io/AeroSpace/goodness#open-a-new-window-with-applescript
-# alt-enter = 'exec-and-forget open -na alacritty'
-alt-enter = 'exec-and-forget TERMINFO_DIRS=/Users/mumu/.nix-profile/share/terminfo:/etc/profiles/per-user/mumu/share/terminfo:/run/current-system/sw/share/terminfo:/nix/var/nix/profiles/default/share/terminfo:/usr/share/terminfo open -na Alacritty.app'
+alt-enter = 'exec-and-forget alacritty msg create-window || TERMINFO_DIRS=/Users/mumu/.nix-profile/share/terminfo:/etc/profiles/per-user/mumu/share/terminfo:/run/current-system/sw/share/terminfo:/nix/var/nix/profiles/default/share/terminfo:/usr/share/terminfo open -na Alacritty.app'
 alt-left = 'focus left'
 alt-down = 'focus down'
 alt-up = 'focus up'
