@@ -40,7 +40,6 @@
             "homebrew/services"
             "dimentium/autoraise"
             "FelixKratz/formulae"
-            "nikitabobko/tap"
           ];
           brews = [
             { name = "autoraise"; restart_service = "changed"; }
@@ -54,9 +53,7 @@
             "signal"
             "orion"
             "proton-drive"
-            "freetube"
             "whisky"
-            "aerospace"
             "sf-symbols"
             "font-sf-mono"
             "font-sf-pro"
@@ -73,10 +70,6 @@
         launchd.user.agents = {
           raycast = {
             serviceConfig.ProgramArguments = [ "${pkgs.raycast}/Applications/Raycast.app/Contents/MacOS/Raycast" ];
-            serviceConfig.RunAtLoad = true;
-          };
-          aerospace = {
-            serviceConfig.ProgramArguments = [ "/Applications/AeroSpace.app/Contents/MacOS/AeroSpace" ];
             serviceConfig.RunAtLoad = true;
           };
         };
