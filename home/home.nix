@@ -139,7 +139,12 @@
       slack
       spotify-player
       yubikey-personalization
+      # block youtube ads network-wide
+      # TODO(murph): currently requires NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 and --impure,
+      # though the package works on darwin
+      isponsorblocktv
     ];
+
 
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
     # plain files is through 'home.file'.

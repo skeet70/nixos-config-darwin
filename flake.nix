@@ -74,6 +74,19 @@
           };
         };
 
+        # TODO(murph): this can't see the binary installed by home manager so it doesn't work
+        launchd.daemons.isponsorblocktv = {
+          script = ''
+            exec isponsorblocktv start
+          '';
+          serviceConfig = {
+            KeepAlive = true;
+            RunAtLoad = true;
+            StandardOutPath = "/var/log/isponsorblocktv.out.log";
+            StandardErrorPath = "/var/log/isponsorblocktv.err.log";
+          };
+        };
+
         # Necessary for using flakes on this system.
         nix.settings.experimental-features = "nix-command flakes";
 
