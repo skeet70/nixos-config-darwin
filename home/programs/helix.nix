@@ -71,6 +71,15 @@
               unit = " ";
             };
         }
+        {
+          name = "scala";
+          indent =
+            {
+              tab-width = 2;
+              unit = "";
+            };
+          auto-format = true;
+        }
         # [[language]]
         # name = "yaml"
         # file-types = ["yaml", "yml"]

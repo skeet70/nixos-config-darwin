@@ -114,10 +114,11 @@
           # Used for backwards compatibility, please read the changelog before changing.
           # $ darwin-rebuild changelog
           stateVersion = 5;
-          activationScripts.postUserActivation.text = ''
+          activationScripts.postActivation.text = ''
             # Following line should allow us to avoid a logout/login cycle
-            /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+            sudo -u mumu /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
           '';
+          primaryUser = "mumu";
         };
 
 
