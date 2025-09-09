@@ -20,7 +20,7 @@
   outputs = inputs@{ self, darwin, home-manager, nixpkgs, mac-app-util, ... }:
     let
       configuration = { pkgs, ... }: {
-        nix.package = pkgs.nixVersions.nix_2_26;
+        nix.package = pkgs.nixVersions.nix_2_28;
         # List packages installed in system profile. To search by name, run:
         # $ nix-env -qaP | grep wget
         environment = {
@@ -58,6 +58,7 @@
             "font-sf-mono"
             "font-sf-pro"
             "qobuz"
+            "orcaslicer"
           ];
 
           masApps = {
@@ -121,7 +122,7 @@
           primaryUser = "mumu";
         };
 
-
+        services.tailscale.enable = true;
 
         # The platform the configuration will be used on.
         nixpkgs.hostPlatform = "aarch64-darwin";

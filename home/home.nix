@@ -134,6 +134,8 @@
       opensc
       ouch
       postman
+      # CAD 3D parametric modeling (3D printing)
+      openscad-unstable
       # settings -> keyboard -> keyboard shortcuts -> spotlight, turn both off
       raycast
       slack
