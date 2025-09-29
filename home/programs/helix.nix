@@ -65,11 +65,29 @@
         }
         {
           name = "json";
-          indent =
+          formatter = {
+            command = "prettier";
+            args = [ "--stdin-filepath" "%{buffer_name}" ];
+          };
+          language-servers = [
             {
-              tab-width = 4;
-              unit = " ";
-            };
+              name = "vscode-json-language-server";
+              except-features = [ "format" ];
+            }
+          ];
+        }
+        {
+          name = "jsonc";
+          formatter = {
+            command = "prettier";
+            args = [ "--stdin-filepath" "%{buffer_name}" ];
+          };
+          language-servers = [
+            {
+              name = "vscode-json-language-server";
+              except-features = [ "format" ];
+            }
+          ];
         }
         {
           name = "scala";
