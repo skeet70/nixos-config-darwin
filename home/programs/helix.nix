@@ -12,6 +12,7 @@
         file-picker = {
           hidden = false;
         };
+        atomic-save = false;
       };
     };
     languages = {

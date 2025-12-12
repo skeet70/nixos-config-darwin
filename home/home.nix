@@ -22,18 +22,25 @@
   programs = {
     git = {
       enable = true;
-      package = pkgs.gitAndTools.gitFull; # Install git wiith all the optional extras
-      userName = "Murph Murphy";
-      userEmail = "murph@clurictec.com";
-      aliases = {
-        # find how a given commit made it into a given branch, ex `git find-merge 2f87703c main`
-        find-merge = ''!sh -c 'commit=$0 && branch=''${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2' '';
-        # show the commit that brought a commit into the current branch, ex `git show-merge a7a040dcd7c2 sa-tagging-events`
-        show-merge = ''!sh -c 'merge=$(git find-merge $0 $1) && [ -n \"$merge\" ] && git show $merge' '';
-        # remove branches that are no longer on the remote
-        gone = ''! git fetch -p && git for-each-ref --format '%(refname:short) %(upstream:track)' | awk '$2 == "[gone]" {print $1}' | xargs -r git branch -D'';
-      };
-      extraConfig = {
+      settings = {
+        user = {
+          name = "Murph Murphy";
+          email = "murph.murphy@ironcorelabs.com";
+          # can specify if needed, but it's left off in favor of the git alias that dynamically gets the
+          # signing key on commit and tag 
+          # signingKey = "8FBF0A12F79B63D5";
+        };
+        commit.gpgSign = true;
+        tag.gpgSign = true;
+        gpg.program = "gpg2";
+        alias = {
+          # find how a given commit made it into a given branch, ex `git find-merge 2f87703c main`
+          find-merge = ''!sh -c 'commit=$0 && branch=''${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2' '';
+          # show the commit that brought a commit into the current branch, ex `git show-merge a7a040dcd7c2 sa-tagging-events`
+          show-merge = ''!sh -c 'merge=$(git find-merge $0 $1) && [ -n \"$merge\" ] && git show $merge' '';
+          # remove branches that are no longer on the remote
+          gone = ''! git fetch -p && git for-each-ref --format '%(refname:short) %(upstream:track)' | awk '$2 == "[gone]" {print $1}' | xargs -r git branch -D'';
+        };
         github.user = "skeet70";
         # Use vim as our default git editor
         core.editor = "hx";
@@ -59,6 +66,9 @@
         unzip = "ouch decompress";
         # for jdt-language-server
       };
+      initContent = ''
+        git() { if [[ "$1" == "commit" ]] || [[ "$1" == "tag" ]]; then local KEY=$(gpg --card-status 2>/dev/null | grep "Signature key" | awk '{gsub(/ /, ""); print substr($0, length($0)-15)}'); if [ -n "$KEY" ]; then command git -c user.signingkey=$KEY "$@"; else command git "$@"; fi; else command git "$@"; fi; }
+      '';
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
       enableCompletion = true;
@@ -96,14 +106,11 @@
 
     ssh = {
       enable = true;
-      compression = true;
-      controlMaster = "auto";
+      matchBlocks."*" = {
+        compression = true;
+        controlMaster = "auto";
+      };
       includes = [ "*.conf" ];
-      # matchBlocks."*" =
-      #   {
-      #     identityFile = "~/.ssh/yubikey.pub";
-      #     identitiesOnly = true;
-      #   };
       extraConfig = ''
         AddKeysToAgent yes
       '';
@@ -114,6 +121,15 @@
       enableZshIntegration = true;
       nix-direnv.enable = true;
     };
+  };
+
+  # download the public_key from Bitwarden gpg entry(s)
+  # gpg2 --import ~/.ssh/public_key
+  # gpg2 --card-status
+  services.gpg-agent = {
+    enable = true;
+    enableSshSupport = true;
+    enableZshIntegration = true;
   };
 
   home = {

@@ -38,11 +38,9 @@
 
           taps = [
             "homebrew/services"
-            "dimentium/autoraise"
             "FelixKratz/formulae"
           ];
           brews = [
-            { name = "autoraise"; restart_service = "changed"; }
             # (macOS Sonoma) Hide the default macOS menu bar in System Settings -> Control Center -> Automatically hide and show the menu bar -> Always:
             { name = "sketchybar"; restart_service = "changed"; }
             { name = "syncthing"; restart_service = "changed"; }
@@ -94,15 +92,6 @@
         # Create /etc/zshrc that loads the darwin environment.
         programs = {
           zsh.enable = true; # default shell on catalina
-
-          # download the public_key from Bitwarden gpg entry
-          # gpg2 --import ~/.ssh/public_key
-          # gpg2 --card-status
-          gnupg.agent = {
-            enable = true;
-            enableSSHSupport = true;
-
-          };
         };
 
         system = {
