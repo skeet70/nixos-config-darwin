@@ -1,9 +1,9 @@
 { ... }: {
   programs.aerospace = {
     enable = true;
+    launchd.enable = true;
 
-    userSettings = {
-      start-at-login = true;
+    settings = {
       # i3 doesn"t have "normalizations" feature that why we disable them here.
       # But the feature is very helpful.
       # Normalizations eliminate all sorts of weird tree configurations that don"t make sense.
@@ -20,6 +20,7 @@
       ];
       # Mouse follows focus when focused monitor changes
       on-focused-monitor-changed = [ "move-mouse monitor-lazy-center" ];
+      key-mapping.preset = "dvorak";
       mode.main.binding = {
         # See: https://nikitabobko.github.io/AeroSpace/goodness#open-a-new-window-with-applescript
         alt-enter = "exec-and-forget alacritty msg create-window || TERMINFO_DIRS=/Users/mumu/.nix-profile/share/terminfo:/etc/profiles/per-user/mumu/share/terminfo:/run/current-system/sw/share/terminfo:/nix/var/nix/profiles/default/share/terminfo:/usr/share/terminfo open -na Alacritty.app";
@@ -34,16 +35,23 @@
         alt-shift-right = "move right";
 
         # Consider using "join-with" command as a "split" replacement if you want to enable normalizations
-        alt-h = "join-with down";
-        alt-v = "join-with right";
-
-        alt-f = "fullscreen";
-
-        alt-s = "layout v_accordion"; # "layout stacking" in i3
-        alt-w = "layout h_accordion"; # "layout tabbed" in i3
-        alt-e = "layout tiles horizontal vertical"; # "layout toggle split" in i3
-
-        alt-q = "close --quit-if-last-window";
+        # all this karabiner stuff is to work around https://github.com/nikitabobko/AeroSpace/discussions/959
+        # even with a hyper key and karabiner mapping to `cmd-ctrl-alt-shift` or other variations, AeroSpace still
+        # wasn't catching combos.
+        # alt-h from karabiner
+        f13 = "join-with down";
+        # alt-v from karabiner
+        f14 = "join-with right";
+        # alt-f from karabiner
+        f15 = "fullscreen";
+        # alt-s from karabiner
+        f16 = "layout v_accordion"; # "layout stacking" in i3
+        # alt-w from karabiner
+        f17 = "layout h_accordion"; # "layout tabbed" in i3
+        # alt-e from karabiner
+        f18 = "layout tiles horizontal vertical"; # "layout toggle split" in i3
+        # alt-q from karabiner
+        f19 = "close --quit-if-last-window";
         alt-shift-space = "layout floating tiling"; # "floating toggle" in i3
 
         # Not supported, because this command is redundant in AeroSpace mental model.
@@ -77,9 +85,11 @@
         alt-shift-0 = "move-node-to-workspace 10";
         alt-shift-x = "move-workspace-to-monitor --wrap-around next";
 
-        alt-shift-c = "reload-config";
-
-        alt-r = "mode resize";
+        # alt-c from karabiner
+        f20 = "reload-config";
+        # alt-r from karabiner
+        # WARN: ran out of virtual keys, no resizing for now
+        # f21 = "mode resize";
       };
       mode.resize.binding = {
         h = "resize width -50";
@@ -89,7 +99,6 @@
         enter = "mode main";
         esc = "mode main";
       };
-      key-mapping.preset = "dvorak";
     };
   };
 }

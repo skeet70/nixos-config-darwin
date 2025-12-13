@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, karabinix, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -132,36 +132,136 @@
     enableZshIntegration = true;
   };
 
+  services.karabinix = {
+    enable = true;
+    configuration = with karabinix.lib;
+      let
+        helpers = import "${karabinix}/lib/rules.nix" { lib = pkgs.lib; };
+        inherit (helpers) mkRule mkManipulator mkFromEvent mkModifiers;
+      in
+      {
+        profiles = [
+          (mkProfile {
+            name = "Default profile";
+            selected = true;
+            complex_modifications = mkComplexModification
+              {
+                rules = [
+                  (mkRule "Alt+letter to Hyper+letter for AeroSpace" [
+                    # Alt+h -> F13 (join-with down)
+                    (mkManipulator {
+                      from = mkFromEvent {
+                        key_code = keyCodes.h;
+                        modifiers = mkModifiers { mandatory = modifiers.alt; };
+                      };
+                      to = [ (mkToEvent { key_code = keyCodes.f13; }) ];
+                    })
+                    # Alt+v -> F14 (join-with right)
+                    (mkManipulator {
+                      from = mkFromEvent {
+                        key_code = keyCodes.v;
+                        modifiers = mkModifiers { mandatory = modifiers.alt; };
+                      };
+                      to = [ (mkToEvent { key_code = keyCodes.f14; }) ];
+                    })
+                    # Alt+f -> F15 (fullscreen)
+                    (mkManipulator {
+                      from = mkFromEvent {
+                        key_code = keyCodes.f;
+                        modifiers = mkModifiers { mandatory = modifiers.alt; };
+                      };
+                      to = [ (mkToEvent { key_code = keyCodes.f15; }) ];
+                    })
+                    # Alt+s -> F16 (layout v_accordion)
+                    (mkManipulator {
+                      from = mkFromEvent {
+                        key_code = keyCodes.s;
+                        modifiers = mkModifiers { mandatory = modifiers.alt; };
+                      };
+                      to = [ (mkToEvent { key_code = keyCodes.f16; }) ];
+                    })
+                    # Alt+w -> F17 (layout h_accordion)
+                    (mkManipulator {
+                      from = mkFromEvent {
+                        key_code = keyCodes.w;
+                        modifiers = mkModifiers { mandatory = modifiers.alt; };
+                      };
+                      to = [ (mkToEvent { key_code = keyCodes.f17; }) ];
+                    })
+                    # Alt+e -> F18 (layout tiles)
+                    (mkManipulator {
+                      from = mkFromEvent {
+                        key_code = keyCodes.e;
+                        modifiers = mkModifiers { mandatory = modifiers.alt; };
+                      };
+                      to = [ (mkToEvent { key_code = keyCodes.f18; }) ];
+                    })
+                    # Alt+q -> F19 (close)
+                    (mkManipulator {
+                      from = mkFromEvent {
+                        key_code = keyCodes.q;
+                        modifiers = mkModifiers { mandatory = modifiers.alt; };
+                      };
+                      to = [ (mkToEvent { key_code = keyCodes.f19; }) ];
+                    })
+                    # Alt+c -> F20 (reload-config)
+                    (mkManipulator {
+                      from = mkFromEvent {
+                        key_code = keyCodes.c;
+                        modifiers = mkModifiers { mandatory = modifiers.alt; };
+                      };
+                      to = [ (mkToEvent { key_code = keyCodes.f20; }) ];
+                    })
+                    # Alt+r -> F21 (mode resize)
+                    # WARN: ran out up supported virtual keys, no resizing for now
+                    # (mkManipulator {
+                    #   from = mkFromEvent {
+                    #     key_code = keyCodes.r;
+                    #     modifiers = mkModifiers { mandatory = modifiers.alt; };
+                    #   };
+                    #   to = [ (mkToEvent { key_code = "f21"; }) ];
+                    # })
+                  ])
+                ];
+              };
+          })
+        ];
+      };
+  };
+  # Force overwrite the karabiner config
+  home.file.".config/karabiner/karabiner.json".force = true;
+
   home = {
-    packages = with pkgs; [
-      colima
-      docker
-      bat
-      # disabled until https://github.com/NixOS/nixpkgs/issues/339576
-      #bitwarden-cli
-      gnupg
-      htop
-      ironhide
-      jq
-      # commented out, can't find cocoa during build, should look into it later
-      # matui # lightweight matrix tui client
-      nixpkgs-fmt
-      obsidian
-      opensc
-      ouch
-      postman
-      # CAD 3D parametric modeling (3D printing)
-      openscad-unstable
-      # settings -> keyboard -> keyboard shortcuts -> spotlight, turn both off
-      raycast
-      slack
-      spotify-player
-      yubikey-personalization
-      # block youtube ads network-wide
-      # TODO(murph): currently requires NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 and --impure,
-      # though the package works on darwin
-      isponsorblocktv
-    ];
+    packages = with pkgs;
+      [
+        colima
+        docker
+        bat
+        # disabled until https://github.com/NixOS/nixpkgs/issues/339576
+        #bitwarden-cli
+        gnupg
+        htop
+        ironhide
+        jq
+        # commented out, can't find cocoa during build, should look into it later
+        # matui # lightweight matrix tui client
+        nixpkgs-fmt
+        obsidian
+        opensc
+        ouch
+        postman
+        # CAD 3D parametric modeling (3D printing)
+        openscad-unstable
+        # settings -> keyboard -> keyboard shortcuts -> spotlight, turn both off
+        raycast
+        slack
+        spotify-player
+        yubikey-personalization
+        # block youtube ads network-wide
+        # TODO(murph): currently requires NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 and --impure,
+        # though the package works on darwin
+        isponsorblocktv
+      ];
 
 
     # Home Manager is pretty good at managing dotfiles. The primary way to manage

@@ -15,9 +15,11 @@
       url = "github:shaunsingh/SFMono-Nerd-Font-Ligaturized";
       flake = false;
     };
+    # declarative configuration for karabiner-elements
+    karabinix.url = "github:pepegar/karabinix";
   };
 
-  outputs = inputs@{ self, darwin, home-manager, nixpkgs, mac-app-util, ... }:
+  outputs = inputs@{ self, darwin, home-manager, nixpkgs, mac-app-util, karabinix, ... }:
     let
       configuration = { pkgs, ... }: {
         nix.package = pkgs.nixVersions.nix_2_28;
@@ -57,6 +59,7 @@
             "font-sf-pro"
             "qobuz"
             "orcaslicer"
+            "karabiner-elements"
           ];
 
           masApps = {
@@ -166,7 +169,10 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.mumu = import ./home/home.nix;
-            home-manager.sharedModules = [ mac-app-util.homeManagerModules.default ];
+            home-manager.sharedModules = [ mac-app-util.homeManagerModules.default karabinix.homeManagerModules.karabinix ];
+            home-manager.extraSpecialArgs = {
+              inherit karabinix;
+            };
           }
         ];
       };
