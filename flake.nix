@@ -48,12 +48,9 @@
             { name = "syncthing"; restart_service = "changed"; }
           ];
           casks = [
-            "steam"
-            "league-of-legends"
             "signal"
             "orion"
             "proton-drive"
-            "whisky"
             "sf-symbols"
             "font-sf-mono"
             "font-sf-pro"
@@ -76,16 +73,15 @@
           };
         };
 
-        # TODO(murph): this can't see the binary installed by home manager so it doesn't work
-        launchd.daemons.isponsorblocktv = {
+        launchd.user.agents.isponsorblocktv = {
           script = ''
-            exec isponsorblocktv start
+            exec ${pkgs.isponsorblocktv}/bin/isponsorblocktv --data "/Users/mumu/Library/Application Support/iSponsorBlockTV" start
           '';
           serviceConfig = {
             KeepAlive = true;
             RunAtLoad = true;
-            StandardOutPath = "/var/log/isponsorblocktv.out.log";
-            StandardErrorPath = "/var/log/isponsorblocktv.err.log";
+            StandardOutPath = "/Users/mumu/Library/Logs/isponsorblocktv.out.log";
+            StandardErrorPath = "/Users/mumu/Library/Logs/isponsorblocktv.err.log";
           };
         };
 

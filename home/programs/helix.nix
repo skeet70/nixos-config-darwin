@@ -16,6 +16,12 @@
       };
     };
     languages = {
+      language-server.rust-analyzer.config = {
+        procMacro.enable = true;
+        # attribute proc macros were often causing the LSP to hang, enable if you miss expanded macro code inspection
+        # or completions inside macro-generated code
+        attributes.enable = false;
+      };
       language = [
         {
           name = "javascript";
@@ -32,6 +38,10 @@
             args = [ "--parser" "typescript" ];
           };
           auto-format = true;
+        }
+        {
+          name = "rust";
+          formatter = { command = "rustfmt"; };
         }
         {
           name = "typescript";
@@ -148,10 +158,11 @@
     nixpkgs-fmt # nix
     marksman # markdown
     metals # scala
-    python312Packages.python-lsp-server # python
-    python312Packages.python-lsp-ruff # python
-    python312Packages.pylsp-mypy # python
-    black # python
+    # disabling these three because a dep of theirs fails to build on tahoe 1/21/26
+    # python312Packages.python-lsp-server # python
+    # python312Packages.python-lsp-ruff # python
+    # python312Packages.pylsp-mypy # python
+    # black # python
     rust-analyzer # rust
     nodePackages.svelte-language-server # svelte
     taplo # toml
