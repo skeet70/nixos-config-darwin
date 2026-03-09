@@ -40,10 +40,6 @@
           auto-format = true;
         }
         {
-          name = "rust";
-          formatter = { command = "rustfmt"; };
-        }
-        {
           name = "typescript";
           formatter = {
             command = "prettier";

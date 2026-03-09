@@ -240,6 +240,7 @@
         colima
         docker
         bat
+        brave # exclusively for meet, their shit is always broken on other browsers
         # disabled until https://github.com/NixOS/nixpkgs/issues/339576
         #bitwarden-cli
         gnupg
@@ -258,7 +259,6 @@
         # settings -> keyboard -> keyboard shortcuts -> spotlight, turn both off
         raycast
         slack
-        spotify-player
         yubikey-personalization
         # block youtube ads network-wide
         isponsorblocktv
@@ -296,6 +296,13 @@
       DOCKER_HOST = "unix://${config.home.homeDirectory}/.colima/default/docker.sock";
       TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE = "/var/run/docker.sock";
       TESTCONTAINERS_RYUK_DISABLED = 1;
+    };
+  };
+
+  targets.darwin.defaults = {
+    "com.tinyspeck.slackmacgap" = {
+      SUEnableAutomaticChecks = false;
+      SUAutomaticallyUpdate = false;
     };
   };
 }
