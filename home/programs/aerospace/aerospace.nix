@@ -1,4 +1,12 @@
-{ ... }: {
+{ config, ... }:
+let
+  # `open` resolves a bare `Alacritty.app` through LaunchServices, whose cache
+  # keeps answering with a garbage-collected generation. A path cannot go stale.
+  alacrittyApp = "${config.programs.alacritty.package}/Applications/Alacritty.app";
+  # `open` starts the app from launchd, so it inherits none of this process's
+  # environment.
+  terminfoDirs = "/Users/mumu/.nix-profile/share/terminfo:/etc/profiles/per-user/mumu/share/terminfo:/run/current-system/sw/share/terminfo:/nix/var/nix/profiles/default/share/terminfo:/usr/share/terminfo";
+in {
   programs.aerospace = {
     enable = true;
     launchd.enable = true;
@@ -23,7 +31,9 @@
       key-mapping.preset = "dvorak";
       mode.main.binding = {
         # See: https://nikitabobko.github.io/AeroSpace/goodness#open-a-new-window-with-applescript
-        alt-enter = "exec-and-forget alacritty msg create-window || TERMINFO_DIRS=/Users/mumu/.nix-profile/share/terminfo:/etc/profiles/per-user/mumu/share/terminfo:/run/current-system/sw/share/terminfo:/nix/var/nix/profiles/default/share/terminfo:/usr/share/terminfo open -na Alacritty.app";
+        # `msg create-window` reuses a running instance, which after a profile
+        # switch is still the old build until every window is closed.
+        alt-enter = "exec-and-forget alacritty msg create-window || TERMINFO_DIRS=${terminfoDirs} open -na '${alacrittyApp}'";
         alt-left = "focus left";
         alt-down = "focus down";
         alt-up = "focus up";

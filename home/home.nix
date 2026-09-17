@@ -35,7 +35,23 @@
         };
         commit.gpgSign = true;
         tag.gpgSign = true;
-        gpg.program = "gpg2";
+        # delete key stubs if they're different than the currently loaded key, then restart scdaemon and force gpg to
+        # reload from the card
+        gpg.openpgp.program = toString (pkgs.writeShellScript "gpg-with-relearn" ''
+          INSERTED=$(${pkgs.gnupg}/bin/gpg-connect-agent "scd serialno" /bye 2>/dev/null | awk '/^S SERIALNO/ {print $3}')
+
+          if [ -n "$INSERTED" ]; then
+            STUBBED=$(grep -roh 'D276[0-9A-Fa-f]*' ~/.gnupg/private-keys-v1.d/ 2>/dev/null | head -1)
+
+            if [ "$INSERTED" != "$STUBBED" ]; then
+              ${pkgs.gnupg}/bin/gpgconf --kill scdaemon >/dev/null 2>&1
+              rm -f ~/.gnupg/private-keys-v1.d/*.key
+              ${pkgs.gnupg}/bin/gpg-connect-agent "scd serialno" "learn --force" /bye >/dev/null 2>&1
+            fi
+          fi
+
+          exec ${pkgs.gnupg}/bin/gpg "$@"
+        '');
         alias = {
           # find how a given commit made it into a given branch, ex `git find-merge 2f87703c main`
           find-merge = ''!sh -c 'commit=$0 && branch=''${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2' '';
@@ -71,6 +87,10 @@
       };
       initContent = ''
         git() { if [[ "$1" == "commit" ]] || [[ "$1" == "tag" ]]; then local KEY=$(gpg --card-status 2>/dev/null | grep "Signature key" | awk '{gsub(/ /, ""); print substr($0, length($0)-15)}'); if [ -n "$KEY" ]; then command git -c user.signingkey=$KEY "$@"; else command git "$@"; fi; else command git "$@"; fi; }
+      '';
+      profileExtra = ''
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        export PATH="$PATH:$HOME/Library/Application Support/hatch/pythons/3.10/python/bin"
       '';
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
@@ -109,14 +129,15 @@
 
     ssh = {
       enable = true;
-      matchBlocks."*" = {
-        compression = true;
-        controlMaster = "auto";
+      enableDefaultConfig = false;
+      settings."*" = {
+        AddKeysToAgent = "yes";
+        Compression = true;
+        ControlMaster = "auto";
+        # ControlMaster does nothing without a ControlPath.
+        ControlPath = "~/.ssh/master-%r@%n:%p";
       };
       includes = [ "*.conf" ];
-      extraConfig = ''
-        AddKeysToAgent yes
-      '';
     };
 
     direnv = {
@@ -258,7 +279,6 @@
         openscad-unstable
         # settings -> keyboard -> keyboard shortcuts -> spotlight, turn both off
         raycast
-        slack
         yubikey-personalization
         # block youtube ads network-wide
         isponsorblocktv
@@ -296,13 +316,6 @@
       DOCKER_HOST = "unix://${config.home.homeDirectory}/.colima/default/docker.sock";
       TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE = "/var/run/docker.sock";
       TESTCONTAINERS_RYUK_DISABLED = 1;
-    };
-  };
-
-  targets.darwin.defaults = {
-    "com.tinyspeck.slackmacgap" = {
-      SUEnableAutomaticChecks = false;
-      SUAutomaticallyUpdate = false;
     };
   };
 }

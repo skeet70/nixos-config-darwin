@@ -97,6 +97,10 @@
           ];
         }
         {
+          name = "markdown";
+          soft-wrap.enable = true;
+        }
+        {
           name = "scala";
           indent =
             {
@@ -140,12 +144,12 @@
 
   home.packages = with pkgs; [
     # helix language support
-    nodePackages.bash-language-server # bash
+    bash-language-server # bash
     shellcheck # bash
     clang-tools # cpp
     gopls # go
     haskell-language-server # haskell
-    nodePackages.intelephense # php
+    intelephense # php
     # the java one still needs some work. this installs the right lsp, but helix can't see it.
     # might see this, haven't tried env var https://dschrempf.github.io/emacs/2023-03-02-emacs-java-and-nix/
     jdt-language-server # java
@@ -160,10 +164,10 @@
     # python312Packages.pylsp-mypy # python
     # black # python
     rust-analyzer # rust
-    nodePackages.svelte-language-server # svelte
+    svelte-language-server # svelte
     taplo # toml
-    nodePackages.typescript-language-server # typescript
-    nodePackages.prettier # typescript, js
+    typescript-language-server # typescript
+    prettier # typescript, js
     vscode-langservers-extracted # css, json, html
     yaml-language-server # yaml
     # - vscode-github-actions equivalent?

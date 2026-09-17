@@ -3,11 +3,13 @@
     darwin.url = "github:LnL7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
     helix.url = "github:helix-editor/helix";
+    helix.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # makes home-manager/nix-darwin installed apps show up in spotlight
     mac-app-util.url = "github:hraban/mac-app-util";
     ironhide.url = "github:IronCoreLabs/ironhide";
+    ironhide.inputs.nixpkgs.follows = "nixpkgs";
     matui.url = "github:pkulak/matui";
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     # # SFMono w/ patches
@@ -22,7 +24,7 @@
   outputs = inputs@{ self, darwin, home-manager, nixpkgs, mac-app-util, karabinix, ... }:
     let
       configuration = { pkgs, ... }: {
-        nix.package = pkgs.nixVersions.nix_2_28;
+        nix.package = pkgs.nixVersions.nix_2_31;
         # List packages installed in system profile. To search by name, run:
         # $ nix-env -qaP | grep wget
         environment = {
@@ -40,7 +42,8 @@
 
           taps = [
             "homebrew/services"
-            "FelixKratz/formulae"
+            # sketchybar resolves through this tap, and Homebrew 6 refuses untrusted taps during activation.
+            { name = "FelixKratz/formulae"; trusted = true; }
           ];
           brews = [
             # (macOS Sonoma) Hide the default macOS menu bar in System Settings -> Control Center -> Automatically hide and show the menu bar -> Always:
@@ -49,7 +52,7 @@
           ];
           casks = [
             "signal"
-            "orion"
+            "slack"
             "proton-drive"
             "sf-symbols"
             "font-sf-mono"
@@ -87,6 +90,8 @@
 
         # Necessary for using flakes on this system.
         nix.settings.experimental-features = "nix-command flakes";
+        # simplify use, trust self
+        nix.settings.trusted-users = [ "root" "mumu" ];
 
         # Create /etc/zshrc that loads the darwin environment.
         programs = {
@@ -154,6 +159,10 @@
                 '';
               };
             })
+            (final: prev: {
+              # Backport of nixpkgs 5530e24f, not yet in nixpkgs-unstable; drop it once the channel has it.
+              brave = prev.brave.overrideAttrs (_: { sourceRoot = "Brave Browser.app"; });
+            })
           ];
         };
 
@@ -163,6 +172,7 @@
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
+            home-manager.backupFileExtension = "hm-backup";
             home-manager.useUserPackages = true;
             home-manager.users.mumu = import ./home/home.nix;
             home-manager.sharedModules = [ mac-app-util.homeManagerModules.default karabinix.homeManagerModules.karabinix ];
